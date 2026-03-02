@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BSI Power BI Theme Review</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Noto Sans', sans-serif;
+    background: #FBFBFB;
+    color: #24262E;
+    font-size: 14px;
+    line-height: 1.6;
+    padding: 48px 40px;
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+
+  /* Header */
+  .header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 48px;
+    padding-bottom: 24px;
+    border-bottom: 2px solid #24262E;
+  }
+  .header-left h1 {
+    font-size: 26px;
+    font-weight: 700;
+    letter-spacing: -0.3px;
+    margin-bottom: 4px;
+  }
+  .header-left p {
+    font-size: 13px;
+    color: #7C7D82;
+  }
+  .verdict-badge {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: #5EAB96;
+    color: #FBFBFB;
+    padding: 10px 18px;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+
+  /* Section */
+  section { margin-bottom: 44px; }
+  h2 {
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: #7C7D82;
+    margin-bottom: 16px;
+  }
+
+  /* Summary cards */
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin-bottom: 44px;
+  }
+  .card {
+    background: white;
+    border: 1px solid #E9E9EA;
+    border-radius: 4px;
+    padding: 18px 16px;
+    border-top: 3px solid #5EAB96;
+  }
+  .card.warn { border-top-color: #FF961F; }
+  .card-value {
+    font-size: 28px;
+    font-weight: 700;
+    color: #24262E;
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+  .card-label {
+    font-size: 12px;
+    color: #7C7D82;
+  }
+
+  /* Review table */
+  .review-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+  .review-table thead th {
+    text-align: left;
+    font-weight: 600;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    color: #7C7D82;
+    padding: 0 16px 10px 0;
+    border-bottom: 1px solid #E9E9EA;
+  }
+  .review-table tbody tr {
+    border-bottom: 1px solid #E9E9EA;
+  }
+  .review-table tbody tr:last-child { border-bottom: none; }
+  .review-table td {
+    padding: 13px 16px 13px 0;
+    vertical-align: top;
+  }
+  .area-name { font-weight: 600; }
+  .status-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  .pill-pass  { background: #DFEEEA; color: #1C8837; }
+  .pill-warn  { background: #FFF3E0; color: #C46B00; }
+  .pill-flag  { background: #FAE9E8; color: #C0392B; }
+  .note-text  { font-size: 12px; color: #505158; line-height: 1.5; }
+  .recommendation {
+    font-size: 12px;
+    color: #24262E;
+    background: #F5F5F5;
+    border-left: 3px solid #85D6F0;
+    padding: 6px 10px;
+    margin-top: 6px;
+    border-radius: 0 3px 3px 0;
+  }
+
+  /* Colour palette */
+  .palette-group { margin-bottom: 24px; }
+  .palette-group-label {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    color: #7C7D82;
+    margin-bottom: 8px;
+  }
+  .swatch-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .swatch {
+    width: 48px;
+    height: 48px;
+    border-radius: 4px;
+    border: 1px solid rgba(0,0,0,0.08);
+    position: relative;
+    cursor: default;
+    flex-shrink: 0;
+  }
+  .swatch-labeled {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 6px 12px 6px 6px;
+    background: white;
+    border: 1px solid #E9E9EA;
+    border-radius: 4px;
+  }
+  .swatch-labeled .swatch {
+    width: 32px;
+    height: 32px;
+    flex-shrink: 0;
+  }
+  .swatch-info { line-height: 1.3; }
+  .swatch-name { font-size: 12px; font-weight: 600; }
+  .swatch-hex  { font-size: 11px; color: #7C7D82; font-family: monospace; }
+  .swatch-tag  { font-size: 10px; color: #5EAB96; font-weight: 700; margin-top: 1px; }
+  .swatch-tag.mismatch { color: #C0392B; }
+  .swatch-tag.extended { color: #7C7D82; }
+
+  /* Extended palette detail */
+  .extended-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+  .ext-swatch {
+    width: 36px;
+    height: 36px;
+    border-radius: 3px;
+    border: 1px solid rgba(0,0,0,0.08);
+    position: relative;
+  }
+  .ext-swatch-label {
+    font-size: 9px;
+    text-align: center;
+    margin-top: 2px;
+    font-family: monospace;
+    color: #7C7D82;
+    display: block;
+    width: 36px;
+  }
+  .ext-item { text-align: center; }
+
+  /* Divergent scale */
+  .divergent-bar {
+    display: flex;
+    height: 40px;
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 8px;
+  }
+  .div-seg { flex: 1; }
+  .divergent-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    color: #7C7D82;
+    font-family: monospace;
+  }
+
+  /* Semantic */
+  .semantic-row { display: flex; gap: 12px; }
+  .semantic-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 16px;
+    background: white;
+    border: 1px solid #E9E9EA;
+    border-radius: 4px;
+    flex: 1;
+  }
+  .semantic-dot {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .semantic-meta { line-height: 1.3; }
+  .semantic-name { font-size: 13px; font-weight: 600; }
+  .semantic-hex { font-size: 11px; color: #7C7D82; font-family: monospace; }
+
+  /* Font */
+  .font-compare {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+  .font-box {
+    background: white;
+    border: 1px solid #E9E9EA;
+    border-radius: 4px;
+    padding: 20px;
+  }
+  .font-box.mismatch { border-color: #EFBCBA; background: #FAE9E8; }
+  .font-box-label {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    color: #7C7D82;
+    margin-bottom: 10px;
+  }
+  .font-sample-noto { font-family: 'Noto Sans', sans-serif; font-size: 18px; color: #24262E; }
+  .font-sample-segoe { font-family: 'Segoe UI', sans-serif; font-size: 18px; color: #24262E; }
+  .font-note { font-size: 11px; color: #505158; margin-top: 8px; }
+
+  /* Meeting prep */
+  .questions-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .q-card {
+    background: white;
+    border: 1px solid #E9E9EA;
+    border-radius: 4px;
+    padding: 16px;
+  }
+  .q-tag {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #7C7D82;
+    margin-bottom: 6px;
+  }
+  .q-text { font-size: 13px; line-height: 1.5; color: #24262E; }
+  .q-card.priority { border-left: 3px solid #85D6F0; }
+  .q-card.action   { border-left: 3px solid #5EAB96; }
+  .q-card.clarify  { border-left: 3px solid #E58F8C; }
+
+  /* Footer */
+  .footer {
+    margin-top: 60px;
+    padding-top: 20px;
+    border-top: 1px solid #E9E9EA;
+    font-size: 11px;
+    color: #A7A8AB;
+    display: flex;
+    justify-content: space-between;
+  }
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<div class="header">
+  <div class="header-left">
+    <h1>BSI Power BI theme review</h1>
+    <p>bsi-power-bi-config.json &nbsp;·&nbsp; Reviewed against Frontify brand guidelines &nbsp;·&nbsp; 2 March 2026</p>
+  </div>
+  <div class="verdict-badge">
+    ✅ On-brand
+  </div>
+</div>
+
+<!-- Summary cards -->
+<div class="cards">
+  <div class="card">
+    <div class="card-value">5</div>
+    <div class="card-label">Areas checked</div>
+  </div>
+  <div class="card">
+    <div class="card-value">8</div>
+    <div class="card-label">Brand-aligned palette slots</div>
+  </div>
+  <div class="card warn">
+    <div class="card-value">3</div>
+    <div class="card-label">Minor gaps flagged</div>
+  </div>
+  <div class="card">
+    <div class="card-value">32</div>
+    <div class="card-label">Total colour slots defined</div>
+  </div>
+</div>
+
+<!-- Review table -->
+<section>
+  <h2>Area-by-area review</h2>
+  <table class="review-table">
+    <thead>
+      <tr>
+        <th style="width:22%">Area</th>
+        <th style="width:14%">Status</th>
+        <th>Finding</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="area-name">Primary colours</td>
+        <td><span class="status-pill pill-pass">✅ Match</span></td>
+        <td>
+          <div class="note-text">Charcoal <code>#24262E</code> used for all text classes (label, title, header, callout). Soft White <code>#FBFBFB</code> set as page background with 0% transparency.</div>
+        </td>
+      </tr>
+      <tr>
+        <td class="area-name">Secondary colours</td>
+        <td><span class="status-pill pill-pass">✅ Match</span></td>
+        <td>
+          <div class="note-text">All four brand secondaries present at 100% and 40% tint: Blue, Green, Coral, Purple fill slots 1–8 of the data palette in correct order.</div>
+        </td>
+      </tr>
+      <tr>
+        <td class="area-name">Divergent scale</td>
+        <td><span class="status-pill pill-pass">✅ Match</span></td>
+        <td>
+          <div class="note-text">min/center/max maps precisely to BSI Blue 20% / 60% / 100% tint ramp from the color reference.</div>
+        </td>
+      </tr>
+      <tr>
+        <td class="area-name">Semantic colours</td>
+        <td><span class="status-pill pill-pass">✅ Good</span></td>
+        <td>
+          <div class="note-text">Good/Neutral/Bad uses a standard traffic-light set (<code>#1C8837</code> / <code>#FF961F</code> / <code>#DE350B</code>). Not in the brand palette, but semantically clear and conventional.</div>
+          <div class="recommendation">Consider documenting these as official semantic tokens in Figma so they're consistent across tools.</div>
+        </td>
+      </tr>
+      <tr>
+        <td class="area-name">Typography</td>
+        <td><span class="status-pill pill-warn">⚠️ Partial</span></td>
+        <td>
+          <div class="note-text">File uses Segoe UI Bold / Semibold. Brand guidelines specify <strong>Noto Sans Regular (400)</strong>. Segoe UI is a reasonable Power BI fallback — Noto Sans is not a built-in system font in PBI.</div>
+          <div class="recommendation">Document Segoe UI as the official Power BI font exception. Confirm with Pablo whether Noto Sans can be embedded or loaded via a custom visual.</div>
+        </td>
+      </tr>
+      <tr>
+        <td class="area-name">Minimum font size</td>
+        <td><span class="status-pill pill-warn">⚠️ Minor</span></td>
+        <td>
+          <div class="note-text">Data label size is set to <strong>9pt</strong>. BSI brand minimum body text is <strong>10pt</strong>. Title (10pt) and header (11pt) are compliant.</div>
+          <div class="recommendation">Bump label fontSize from 9 → 10 in the JSON, or document 9pt as an accepted exception for dense data labels.</div>
+        </td>
+      </tr>
+      <tr>
+        <td class="area-name">Extended colours (9–32)</td>
+        <td><span class="status-pill pill-warn">⚠️ Minor</span></td>
+        <td>
+          <div class="note-text">Slots 9–32 use 24 non-brand colours for charts with 9+ data series. Most dashboards won't reach this limit. The methodology for how these were chosen is undocumented.</div>
+          <div class="recommendation">Key meeting question: ask Pablo how the extended palette was constructed. If systematic, capture it in Figma variables. If ad-hoc, consider generating a brand-derived extended set.</div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- Colour palette visual -->
+<section>
+  <h2>Data palette — all 32 slots</h2>
+  <div class="palette-group">
+    <div class="palette-group-label">Slots 1–8 · Brand-aligned</div>
+    <div class="swatch-row">
+      <div class="swatch-labeled">
+        <div class="swatch" style="background:#85D6F0"></div>
+        <div class="swatch-info">
+          <div class="swatch-name">Blue 100%</div>
+          <div class="swatch-hex">#85D6F0</div>
+          <div class="swatch-tag">✅ Brand</div>
+        </div>
+      </div>
+      <div class="swatch-labeled">
+        <div class="swatch" style="background:#CEEFF9"></div>
+        <div class="swatch-info">
+          <div class="swatch-name">Blue 40%</div>
+          <div class="swatch-hex">#CEEFF9</div>
+          <div class="swatch-tag">✅ Brand</div>
+        </div>
+      </div>
+      <div class="swatch-labeled">
+        <div class="swatch" style="background:#5EAB96"></div>
+        <div class="swatch-info">
+          <div class="swatch-name">Green 100%</div>
+          <div class="swatch-hex">#5EAB96</div>
+          <div class="swatch-tag">✅ Brand</div>
+        </div>
+      </div>
+      <div class="swatch-labeled">
+        <div class="swatch" style="background:#BFDDD5"></div>
+        <div class="swatch-info">
+          <div class="swatch-name">Green 40%</div>
+          <div class="swatch-hex">#BFDDD5</div>
+          <div class="swatch-tag">✅ Brand</div>
+        </div>
+      </div>
+      <div class="swatch-labeled">
+        <div class="swatch" style="background:#E58F8C"></div>
+        <div class="swatch-info">
+          <div class="swatch-name">Coral 100%</div>
+          <div class="swatch-hex">#E58F8C</div>
+          <div class="swatch-tag">✅ Brand</div>
+        </div>
+      </div>
+      <div class="swatch-labeled">
+        <div class="swatch" style="background:#F5D2D1"></div>
+        <div class="swatch-info">
+          <div class="swatch-name">Coral 40%</div>
+          <div class="swatch-hex">#F5D2D1</div>
+          <div class="swatch-tag">✅ Brand</div>
+        </div>
+      </div>
+      <div class="swatch-labeled">
+        <div class="swatch" style="background:#8F99D6"></div>
+        <div class="swatch-info">
+          <div class="swatch-name">Purple 100%</div>
+          <div class="swatch-hex">#8F99D6</div>
+          <div class="swatch-tag">✅ Brand</div>
+        </div>
+      </div>
+      <div class="swatch-labeled">
+        <div class="swatch" style="background:#D2D6EF"></div>
+        <div class="swatch-info">
+          <div class="swatch-name">Purple 40%</div>
+          <div class="swatch-hex">#D2D6EF</div>
+          <div class="swatch-tag">✅ Brand</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="palette-group">
+    <div class="palette-group-label">Slots 9–32 · Extended (non-brand) — methodology undocumented</div>
+    <div class="extended-row">
+      <div class="ext-item"><div class="ext-swatch" style="background:#3599B8"></div><span class="ext-swatch-label">#3599B8</span></div>
+      <div class="ext-item"><div class="ext-swatch" style="background:#DFBFBF"></div><span class="ext-swatch-label">#DFBFBF</span></div>
+      <div class="ext-item"><div class="ext-swatch" style="background:#4AC5BB"></div><span class="ext-swatch-label">#4AC5BB</span></div>
+      <div class="ext-item"><div class="ext-swatch" style="background:#5F6B6D"></div><span class="ext-swatch-label">#5F6B6D</span></div>
+      <div class="ext-item"><div class="ext-swatch" style="background:#FB8281"></div><span class="ext-swatch-label">#FB8281</span></div>
+      <div class="ext-item"><div class="ext-swatch" style="background:#F4D25A"></div><span class="ext-swatch-label">#F4D25A</span></div>
+      <div class="ext-item"><div class="ext-swatch" style="background:#7F898A"></div><span class="ext-swatch-label">#7F898A</span></div>
+      <div class="ext-item"><div class="ext-swatch" style="background:#A4DDEE"></div><span class="ext-swatch-label">#A4DDEE</span></div>
+      <div class="ext-item"><div class="ext-swatch" style="background:#FDAB89"></div><span class="ext-swatch-label">#FDAB89</span></div>
+      <div class="ext-item"><div class="ext-swatch" style="background:#B687AC"></div><span class="ext-swatch-label">#B687AC</span></div>
+      <div class="ext-item"><div class="ext-swatch" style="background:#28738A"></div><span class="ext-swatch-label">#28738A</span></div>
+      <div class="ext-item"><div class="ext-swatch" style="background:#A78F8F"></div><span class="ext-swatch-label">#A78F8F</span></div>
+      <div class="ext-item"><div class="ext-swatch" style="background:#168980"></div><span class="ext-swatch-label">#168980</span></div>
+      <div class="ext-item"><div class="ext-swatch" style="background:#293537"></div><span class="ext-swatch-label">#293537</span></div>
+      <div class="ext-item"><div class="ext-swatch" style="background:#BB4A4A"></div><span class="ext-swatch-label">#BB4A4A</span></div>
+      <div class="ext-item"><div class="ext-swatch" style="background:#B59525"></div><span class="ext-swatch-label">#B59525</span></div>
+      <div class="ext-item"><div class="ext-swatch" style="background:#475052"></div><span class="ext-swatch-label">#475052</span></div>
+      <div class="ext-item"><div class="ext-swatch" style="background:#6A9FB0"></div><span class="ext-swatch-label">#6A9FB0</span></div>
+      <div class="ext-item"><div class="ext-swatch" style="background:#BD7150"></div><span class="ext-swatch-label">#BD7150</span></div>
+      <div class="ext-item"><div class="ext-swatch" style="background:#7B4F71"></div><span class="ext-swatch-label">#7B4F71</span></div>
+      <div class="ext-item"><div class="ext-swatch" style="background:#1B4D5C"></div><span class="ext-swatch-label">#1B4D5C</span></div>
+      <div class="ext-item"><div class="ext-swatch" style="background:#706060"></div><span class="ext-swatch-label">#706060</span></div>
+      <div class="ext-item"><div class="ext-swatch" style="background:#0F5C55"></div><span class="ext-swatch-label">#0F5C55</span></div>
+      <div class="ext-item"><div class="ext-swatch" style="background:#1C2325"></div><span class="ext-swatch-label">#1C2325</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- Divergent scale -->
+<section>
+  <h2>Divergent colour scale</h2>
+  <div class="divergent-bar">
+    <div class="div-seg" style="background:#E7F7FC"></div>
+    <div class="div-seg" style="background:#CEEFF9"></div>
+    <div class="div-seg" style="background:#B6E6F6"></div>
+    <div class="div-seg" style="background:#9DDEF3"></div>
+    <div class="div-seg" style="background:#85D6F0"></div>
+  </div>
+  <div class="divergent-labels">
+    <span>min · #E7F7FC · Blue 20%</span>
+    <span>center · #B6E6F6 · Blue 60%</span>
+    <span>max · #85D6F0 · Blue 100%</span>
+  </div>
+</section>
+
+<!-- Semantic colours -->
+<section>
+  <h2>Semantic colours</h2>
+  <div class="semantic-row">
+    <div class="semantic-item">
+      <div class="semantic-dot" style="background:#1C8837"></div>
+      <div class="semantic-meta">
+        <div class="semantic-name">Good</div>
+        <div class="semantic-hex">#1C8837</div>
+      </div>
+    </div>
+    <div class="semantic-item">
+      <div class="semantic-dot" style="background:#FF961F"></div>
+      <div class="semantic-meta">
+        <div class="semantic-name">Neutral</div>
+        <div class="semantic-hex">#FF961F</div>
+      </div>
+    </div>
+    <div class="semantic-item">
+      <div class="semantic-dot" style="background:#DE350B"></div>
+      <div class="semantic-meta">
+        <div class="semantic-name">Bad</div>
+        <div class="semantic-hex">#DE350B</div>
+      </div>
+    </div>
+  </div>
+  <p style="font-size:12px;color:#7C7D82;margin-top:10px;">Traffic-light semantics — not part of the BSI brand palette, but conventional and clear. Worth registering as official tokens.</p>
+</section>
+
+<!-- Typography -->
+<section>
+  <h2>Typography</h2>
+  <div class="font-compare">
+    <div class="font-box">
+      <div class="font-box-label">Brand guideline</div>
+      <div class="font-sample-noto">Noto Sans Regular</div>
+      <div class="font-note">Google Fonts · weight 400 · min 10pt body</div>
+    </div>
+    <div class="font-box mismatch">
+      <div class="font-box-label">Power BI theme (current)</div>
+      <div class="font-sample-segoe">Segoe UI Bold / Semibold</div>
+      <div class="font-note">System font — Noto Sans unavailable natively in Power BI. Label set to 9pt (1pt below minimum).</div>
+    </div>
+  </div>
+</section>
+
+<!-- Meeting prep -->
+<section>
+  <h2>Meeting prep — questions for Pablo</h2>
+  <div class="questions-grid">
+
+    <div class="q-card priority">
+      <div class="q-tag">Priority · Extended palette</div>
+      <div class="q-text">How was the extended palette (slots 9–32) constructed? Is there a system behind the colour choices, or were they taken from a default Power BI set? We'd like to understand this before adding them to Figma as data viz variables.</div>
+    </div>
+
+    <div class="q-card action">
+      <div class="q-tag">Action · Figma variables</div>
+      <div class="q-text">Which colour tokens from the theme are most useful to have in Figma as design variables — just the brand 8, or the full 32? And would semantic tokens (good/bad/neutral) also be helpful to capture?</div>
+    </div>
+
+    <div class="q-card priority">
+      <div class="q-tag">Priority · Font exception</div>
+      <div class="q-text">Noto Sans isn't a built-in Power BI font — is Segoe UI the agreed fallback for all PBI work? Should we formally document this as the approved exception in Frontify?</div>
+    </div>
+
+    <div class="q-card action">
+      <div class="q-tag">Action · Figma components</div>
+      <div class="q-text">Sunder is building out Figma data viz components. Are there chart types, annotation patterns, or layout conventions in your Power BI work we should capture as reusable Figma components or guidelines?</div>
+    </div>
+
+    <div class="q-card clarify">
+      <div class="q-tag">Clarify · Other tools</div>
+      <div class="q-text">Does the team use other data viz tools beyond Power BI — Excel, Tableau, Python/Matplotlib? Should the same theme be adapted for those, and is there any existing work we can build on?</div>
+    </div>
+
+    <div class="q-card clarify">
+      <div class="q-tag">Clarify · Label size</div>
+      <div class="q-text">Data labels are set to 9pt — slightly below our 10pt minimum. Was this intentional for dense dashboards? Happy to document as an accepted exception if there's a practical reason.</div>
+    </div>
+
+    <div class="q-card action">
+      <div class="q-tag">Action · Maintenance</div>
+      <div class="q-text">As brand guidelines evolve, how should updates to the Power BI theme be managed? Should we establish a versioning process so dashboards can be refreshed centrally?</div>
+    </div>
+
+    <div class="q-card clarify">
+      <div class="q-tag">Clarify · Semantic tokens</div>
+      <div class="q-text">The good/bad/neutral colours aren't in the brand palette. Were these chosen from a specific accessibility or UX framework? Any context would help us document them properly in Figma.</div>
+    </div>
+
+  </div>
+</section>
+
+<div class="footer">
+  <span>bsi-power-bi-config.json · data-viz-review</span>
+  <span>Prepared for meeting with Pablo, data viz team · 2 March 2026</span>
+</div>
+
+</body>
+</html>
