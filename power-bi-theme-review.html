@@ -1,0 +1,1113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BSI Power BI theme review</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;600;700&family=Noto+Sans+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --charcoal:   #24262E;
+    --soft-white: #FBFBFB;
+    --blue:       #85D6F0;
+    --green:      #5EAB96;
+    --coral:      #E58F8C;
+    --purple:     #8F99D6;
+    --mid:        #7C7D82;
+    --light:      #E9E9EA;
+    --faint:      #F5F5F5;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Noto Sans', sans-serif;
+    background: var(--soft-white);
+    color: var(--charcoal);
+    font-size: 14px;
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  /* ── Top bar ── */
+  .topbar {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: var(--charcoal);
+    display: flex;
+    align-items: center;
+    gap: 0;
+    padding: 0 32px;
+    height: 52px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  }
+  .topbar-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: #FBFBFB;
+    white-space: nowrap;
+    margin-right: 32px;
+    letter-spacing: 0.2px;
+  }
+  .topbar-title span {
+    font-weight: 400;
+    color: #9DDEF3;
+    margin-left: 8px;
+    font-size: 12px;
+  }
+  .nav {
+    display: flex;
+    align-items: stretch;
+    height: 100%;
+    gap: 2px;
+    flex: 1;
+  }
+  .nav-btn {
+    background: none;
+    border: none;
+    color: #A7A8AB;
+    font-family: 'Noto Sans', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 0 16px;
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    transition: color 0.15s, border-color 0.15s;
+    white-space: nowrap;
+  }
+  .nav-btn:hover { color: #FBFBFB; }
+  .nav-btn.active {
+    color: #FBFBFB;
+    border-bottom-color: var(--blue);
+  }
+  .topbar-actions {
+    margin-left: auto;
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+  .btn-json {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: 'Noto Sans', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--charcoal);
+    background: var(--blue);
+    border: none;
+    border-radius: 3px;
+    padding: 6px 12px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: opacity 0.15s;
+  }
+  .btn-json:hover { opacity: 0.85; }
+
+  /* ── Pages ── */
+  .page { display: none; padding: 44px 40px 80px; max-width: 1020px; margin: 0 auto; }
+  .page.active { display: block; }
+
+  /* ── Page header ── */
+  .page-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 40px;
+    padding-bottom: 20px;
+    border-bottom: 2px solid var(--charcoal);
+  }
+  .page-header h1 {
+    font-size: 24px;
+    font-weight: 700;
+    letter-spacing: -0.3px;
+    margin-bottom: 4px;
+  }
+  .page-header p { font-size: 13px; color: var(--mid); }
+
+  /* ── Section ── */
+  section { margin-bottom: 44px; }
+  h2 {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--mid);
+    margin-bottom: 16px;
+  }
+
+  /* ── Verdict badge ── */
+  .verdict-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--green);
+    color: #FBFBFB;
+    padding: 8px 16px;
+    border-radius: 4px;
+    font-size: 13px;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+
+  /* ── Summary cards ── */
+  .cards { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; margin-bottom: 40px; }
+  .card {
+    background: white;
+    border: 1px solid var(--light);
+    border-top: 3px solid var(--green);
+    border-radius: 4px;
+    padding: 18px 16px;
+  }
+  .card.warn { border-top-color: #FF961F; }
+  .card-value { font-size: 30px; font-weight: 700; line-height: 1; margin-bottom: 6px; }
+  .card-label { font-size: 12px; color: var(--mid); }
+
+  /* ── Review table ── */
+  .review-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .review-table thead th {
+    text-align: left;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    color: var(--mid);
+    padding: 0 16px 10px 0;
+    border-bottom: 1px solid var(--light);
+  }
+  .review-table tbody tr { border-bottom: 1px solid var(--light); }
+  .review-table tbody tr:last-child { border-bottom: none; }
+  .review-table td { padding: 14px 16px 14px 0; vertical-align: top; }
+  .area-name { font-weight: 600; }
+  .status-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+  .pill-pass { background: #DFEEEA; color: #1C8837; }
+  .pill-warn { background: #FFF3E0; color: #C46B00; }
+  .check-icon { width: 11px; height: 11px; vertical-align: middle; flex-shrink: 0; display: inline-block; }
+  .note-text { font-size: 12px; color: #505158; line-height: 1.5; }
+  .reco {
+    font-size: 12px;
+    color: var(--charcoal);
+    background: var(--faint);
+    border-left: 3px solid var(--blue);
+    padding: 6px 10px;
+    margin-top: 8px;
+    border-radius: 0 3px 3px 0;
+  }
+
+  /* ── Colour palette ── */
+  .palette-group { margin-bottom: 28px; }
+  .palette-label {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    margin-bottom: 10px;
+  }
+  .palette-label.brand { color: var(--green); }
+  .palette-label.extended { color: var(--mid); }
+
+  .brand-swatches { display: grid; grid-template-columns: repeat(4,1fr); gap: 8px; }
+  .swatch-card {
+    background: white;
+    border: 1px solid var(--light);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .swatch-color { height: 52px; }
+  .swatch-meta { padding: 8px 10px; }
+  .swatch-name { font-size: 11px; font-weight: 600; }
+  .swatch-hex { font-size: 10px; font-family: 'Noto Sans Mono', monospace; color: var(--mid); }
+  .swatch-slot { font-size: 10px; color: var(--green); font-weight: 600; }
+  .swatch-slot.ext { color: var(--mid); }
+
+  .ext-grid { display: flex; flex-wrap: wrap; gap: 6px; }
+  .ext-item { text-align: center; }
+  .ext-swatch {
+    width: 40px; height: 40px;
+    border-radius: 3px;
+    border: 1px solid rgba(0,0,0,0.08);
+  }
+  .ext-label {
+    display: block;
+    font-size: 9px;
+    font-family: 'Noto Sans Mono', monospace;
+    color: var(--mid);
+    margin-top: 3px;
+    width: 40px;
+  }
+
+  /* ── Divergent scale ── */
+  .div-wrap { max-width: 600px; }
+  .div-bar { display: flex; height: 44px; border-radius: 4px; overflow: hidden; margin-bottom: 8px; }
+  .div-seg { flex: 1; }
+  .div-labels { display: flex; justify-content: space-between; font-size: 11px; color: var(--mid); font-family: 'Noto Sans Mono', monospace; }
+
+  /* ── Semantic ── */
+  .semantic-row { display: flex; gap: 12px; }
+  .semantic-item {
+    display: flex; align-items: center; gap: 12px;
+    padding: 12px 16px;
+    background: white;
+    border: 1px solid var(--light);
+    border-radius: 4px;
+    flex: 1;
+  }
+  .sem-dot { width: 22px; height: 22px; border-radius: 50%; flex-shrink: 0; }
+  .sem-name { font-size: 13px; font-weight: 600; }
+  .sem-hex { font-size: 11px; color: var(--mid); font-family: 'Noto Sans Mono', monospace; }
+  .sem-note { font-size: 11px; color: var(--mid); margin-top: 10px; }
+
+  /* ── Typography ── */
+  .tc-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .tc-table th {
+    text-align: left;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--mid);
+    padding: 0 16px 10px 0;
+    border-bottom: 1px solid var(--light);
+  }
+  .tc-table td { padding: 12px 16px 12px 0; border-bottom: 1px solid var(--light); vertical-align: middle; }
+  .tc-table tr:last-child td { border-bottom: none; }
+  .tc-class {
+    font-family: 'Noto Sans Mono', monospace;
+    font-size: 11px;
+    font-weight: 600;
+    background: var(--faint);
+    padding: 2px 7px;
+    border-radius: 3px;
+  }
+  .size-ok   { font-family: 'Noto Sans Mono', monospace; font-weight: 600; color: #1C8837; }
+  .size-warn { font-family: 'Noto Sans Mono', monospace; font-weight: 600; color: #C46B00; }
+  .chip {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-family: 'Noto Sans Mono', monospace; font-size: 11px;
+  }
+  .chip-dot { width: 12px; height: 12px; border-radius: 2px; border: 1px solid rgba(0,0,0,0.1); flex-shrink: 0; }
+
+  .font-compare { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 20px; }
+  .font-box {
+    background: white; border: 1px solid var(--light); border-radius: 4px; padding: 20px;
+  }
+  .font-box.mismatch { border-color: #EFBCBA; background: #FAE9E8; }
+  .font-box-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--mid); margin-bottom: 10px; }
+  .font-sample-noto { font-family: 'Noto Sans', sans-serif; font-size: 20px; color: var(--charcoal); margin-bottom: 4px; }
+  .font-sample-segoe { font-family: 'Segoe UI', sans-serif; font-size: 20px; color: var(--charcoal); margin-bottom: 4px; }
+  .font-note { font-size: 11px; color: #505158; }
+
+  /* ── Token row ── */
+  .token-row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 9px 0; border-bottom: 1px solid var(--light);
+  }
+  .token-row:last-child { border-bottom: none; }
+  .token-left { display: flex; align-items: center; gap: 10px; }
+  .token-swatch { width: 28px; height: 28px; border-radius: 3px; border: 1px solid rgba(0,0,0,0.08); flex-shrink: 0; }
+  .token-name { font-size: 12px; font-weight: 600; }
+  .token-key { font-size: 10px; color: var(--mid); font-family: 'Noto Sans Mono', monospace; margin-top: 1px; }
+  .token-hex { font-family: 'Noto Sans Mono', monospace; font-size: 12px; color: #505158; }
+
+  /* ── Config blocks ── */
+  .config-block {
+    background: white; border: 1px solid var(--light); border-radius: 4px; overflow: hidden;
+    margin-bottom: 12px;
+  }
+  .config-head {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 10px 14px; background: var(--faint); border-bottom: 1px solid var(--light);
+  }
+  .config-key {
+    font-family: 'Noto Sans Mono', monospace; font-size: 12px; font-weight: 600;
+    color: var(--charcoal);
+  }
+  .config-type { font-size: 10px; color: var(--mid); font-family: 'Noto Sans Mono', monospace; }
+  .config-body { padding: 14px; }
+  .config-desc { font-size: 12px; color: var(--mid); line-height: 1.5; margin-bottom: 12px; }
+
+  /* ── Visual styles table ── */
+  .vs-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  .vs-table th {
+    text-align: left; font-size: 10px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.5px; color: var(--mid); padding: 0 12px 10px 0; border-bottom: 1px solid var(--light);
+  }
+  .vs-table td { padding: 11px 12px 11px 0; border-bottom: 1px solid var(--light); vertical-align: top; }
+  .vs-table tr:last-child td { border-bottom: none; }
+  .vs-scope {
+    font-family: 'Noto Sans Mono', monospace; font-size: 10px;
+    background: var(--faint); padding: 2px 6px; border-radius: 3px; white-space: nowrap;
+  }
+  .vs-prop { font-size: 11px; color: #505158; }
+  .vs-val { font-family: 'Noto Sans Mono', monospace; font-size: 11px; }
+  .vs-effect { font-size: 11px; color: var(--mid); line-height: 1.5; }
+
+  /* ── Meeting prep ── */
+  .q-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .q-card {
+    background: white; border: 1px solid var(--light); border-radius: 4px; padding: 16px;
+  }
+  .q-card.priority { border-left: 3px solid var(--blue); }
+  .q-card.action   { border-left: 3px solid var(--green); }
+  .q-card.clarify  { border-left: 3px solid var(--coral); }
+  .q-tag { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--mid); margin-bottom: 6px; }
+  .q-text { font-size: 13px; line-height: 1.55; color: var(--charcoal); }
+
+  /* ── Raw JSON ── */
+  .json-toolbar {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 12px 16px;
+    background: #1e2029;
+    border-radius: 4px 4px 0 0;
+  }
+  .json-toolbar-left { display: flex; align-items: center; gap: 10px; }
+  .json-filename { font-family: 'Noto Sans Mono', monospace; font-size: 12px; color: #9DDEF3; }
+  .json-size { font-size: 11px; color: #5F6B6D; }
+  .btn-open {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-family: 'Noto Sans', sans-serif; font-size: 11px; font-weight: 600;
+    color: var(--charcoal); background: var(--blue); border: none; border-radius: 3px;
+    padding: 6px 12px; cursor: pointer; text-decoration: none;
+  }
+  .btn-open:hover { opacity: 0.85; }
+  .json-pre {
+    background: #1e2029;
+    border-radius: 0 0 4px 4px;
+    padding: 20px;
+    overflow-x: auto;
+    font-family: 'Noto Sans Mono', monospace;
+    font-size: 12px;
+    line-height: 1.7;
+    border: 1px solid #2e3040;
+    border-top: none;
+  }
+  /* syntax highlight classes */
+  .j-key   { color: #9DDEF3; }
+  .j-str   { color: #BFDDD5; }
+  .j-num   { color: #F5D2D1; }
+  .j-bool  { color: #D2D6EF; }
+  .j-null  { color: #7C7D82; }
+  .j-punc  { color: #505158; }
+
+  /* ── Footer ── */
+  .page-footer {
+    margin-top: 60px; padding-top: 20px;
+    border-top: 1px solid var(--light);
+    font-size: 11px; color: #A7A8AB;
+    display: flex; justify-content: space-between;
+  }
+
+  /* ── Dividers between sub-sections ── */
+  .divider { border: none; border-top: 1px solid var(--light); margin: 36px 0; }
+</style>
+</head>
+<body>
+
+<!-- Top navigation bar -->
+<nav class="topbar">
+  <div class="topbar-title">BSI Power BI theme review <span>2 Mar 2026</span></div>
+  <div class="nav">
+    <button class="nav-btn active" onclick="showPage('overview', this)">Overview</button>
+    <button class="nav-btn" onclick="showPage('colours', this)">Colours</button>
+    <button class="nav-btn" onclick="showPage('typography', this)">Typography</button>
+    <button class="nav-btn" onclick="showPage('visual-styles', this)">Visual styles</button>
+    <button class="nav-btn" onclick="showPage('meeting', this)">Meeting prep</button>
+    <button class="nav-btn" onclick="showPage('raw-json', this)">Raw JSON</button>
+  </div>
+  <div class="topbar-actions">
+    <a class="btn-json" href="bsi-power-bi-config.json" target="_blank">↗ Open JSON file</a>
+  </div>
+</nav>
+
+
+<!-- ══════════════════════════════════════
+     PAGE 1 — Overview
+══════════════════════════════════════ -->
+<div id="page-overview" class="page active">
+  <div class="page-header">
+    <div>
+      <h1>Overview</h1>
+      <p>bsi-power-bi-config.json &nbsp;·&nbsp; Reviewed against Frontify brand guidelines</p>
+    </div>
+    <div class="verdict-badge"><svg class="check-icon" viewBox="0 0 12 10" fill="none"><polyline points="1,5.5 4.5,9 11,1" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg> On-brand</div>
+  </div>
+
+  <div class="cards">
+    <div class="card">
+      <div class="card-value">7</div>
+      <div class="card-label">Areas checked</div>
+    </div>
+    <div class="card">
+      <div class="card-value">8</div>
+      <div class="card-label">Brand-aligned palette slots</div>
+    </div>
+    <div class="card warn">
+      <div class="card-value">3</div>
+      <div class="card-label">Minor gaps flagged</div>
+    </div>
+    <div class="card">
+      <div class="card-value">32</div>
+      <div class="card-label">Total colour slots</div>
+    </div>
+  </div>
+
+  <section>
+    <h2>Area-by-area review</h2>
+    <table class="review-table">
+      <thead>
+        <tr>
+          <th style="width:22%">Area</th>
+          <th style="width:14%">Status</th>
+          <th>Finding</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="area-name">Primary colours</td>
+          <td><span class="status-pill pill-pass"><svg class="check-icon" viewBox="0 0 12 10" fill="none"><polyline points="1,5.5 4.5,9 11,1" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg> Match</span></td>
+          <td>
+            <div class="note-text">Charcoal <code>#24262E</code> used for all text classes. Soft White <code>#FBFBFB</code> set as page background at 0% transparency.</div>
+          </td>
+        </tr>
+        <tr>
+          <td class="area-name">Secondary colours</td>
+          <td><span class="status-pill pill-pass"><svg class="check-icon" viewBox="0 0 12 10" fill="none"><polyline points="1,5.5 4.5,9 11,1" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg> Match</span></td>
+          <td>
+            <div class="note-text">All four brand secondaries present at 100% and 40% tint — Blue, Green, Coral, Purple fill slots 1–8 in correct order.</div>
+          </td>
+        </tr>
+        <tr>
+          <td class="area-name">Divergent scale</td>
+          <td><span class="status-pill pill-pass"><svg class="check-icon" viewBox="0 0 12 10" fill="none"><polyline points="1,5.5 4.5,9 11,1" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg> Match</span></td>
+          <td>
+            <div class="note-text">min/center/max maps precisely to BSI Blue 20% / 60% / 100% tint ramp from the Frontify colour reference.</div>
+          </td>
+        </tr>
+        <tr>
+          <td class="area-name">Semantic colours</td>
+          <td><span class="status-pill pill-pass"><svg class="check-icon" viewBox="0 0 12 10" fill="none"><polyline points="1,5.5 4.5,9 11,1" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg> Good</span></td>
+          <td>
+            <div class="note-text">Good/Neutral/Bad uses a standard traffic-light set. Not in the brand palette, but conventional and clear.</div>
+            <div class="reco">Consider documenting these as official semantic tokens in Figma so they're consistent across tools.</div>
+          </td>
+        </tr>
+        <tr>
+          <td class="area-name">Typography</td>
+          <td><span class="status-pill pill-warn"><svg class="check-icon" viewBox="0 0 12 12" fill="none"><path d="M6 1L11 10.5H1L6 1Z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><line x1="6" y1="5" x2="6" y2="7.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><circle cx="6" cy="9.2" r="0.7" fill="currentColor"/></svg> Partial</span></td>
+          <td>
+            <div class="note-text">Uses Segoe UI Bold / Semibold. Brand guidelines specify <strong>Noto Sans Regular (400)</strong>. Segoe UI is a reasonable Power BI fallback — Noto Sans is not built into Power BI.</div>
+            <div class="reco">Document Segoe UI as the official Power BI font exception in Frontify.</div>
+          </td>
+        </tr>
+        <tr>
+          <td class="area-name">Minimum font size</td>
+          <td><span class="status-pill pill-warn"><svg class="check-icon" viewBox="0 0 12 12" fill="none"><path d="M6 1L11 10.5H1L6 1Z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><line x1="6" y1="5" x2="6" y2="7.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><circle cx="6" cy="9.2" r="0.7" fill="currentColor"/></svg> Minor</span></td>
+          <td>
+            <div class="note-text">Data label size is set to <strong>9pt</strong>. BSI brand minimum body text is <strong>10pt</strong>. Title (10pt) and header (11pt) are compliant.</div>
+            <div class="reco">Bump label fontSize from 9 → 10, or formally document 9pt as an accepted exception for dense data labels.</div>
+          </td>
+        </tr>
+        <tr>
+          <td class="area-name">Extended colours (9–32)</td>
+          <td><span class="status-pill pill-warn"><svg class="check-icon" viewBox="0 0 12 12" fill="none"><path d="M6 1L11 10.5H1L6 1Z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><line x1="6" y1="5" x2="6" y2="7.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><circle cx="6" cy="9.2" r="0.7" fill="currentColor"/></svg> Minor</span></td>
+          <td>
+            <div class="note-text">Slots 9–32 use 24 non-brand colours for charts with 9+ data series. Methodology is undocumented. Most dashboards won't reach this limit.</div>
+            <div class="reco">Ask Pablo how the extended palette was constructed — if systematic, capture it in Figma variables.</div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <div class="page-footer">
+    <span>bsi-power-bi-config.json</span>
+    <span>Prepared for meeting with Pablo, data viz team · 2 March 2026</span>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════
+     PAGE 2 — Colours
+══════════════════════════════════════ -->
+<div id="page-colours" class="page">
+  <div class="page-header">
+    <div>
+      <h1>Colours</h1>
+      <p>Data palette · divergent scale · semantic tokens</p>
+    </div>
+    <div class="verdict-badge"><svg class="check-icon" viewBox="0 0 12 10" fill="none"><polyline points="1,5.5 4.5,9 11,1" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg> On-brand</div>
+  </div>
+
+  <section>
+    <h2>Data palette — slots 1–8 · Brand-aligned</h2>
+    <div class="brand-swatches">
+      <div class="swatch-card">
+        <div class="swatch-color" style="background:#85D6F0"></div>
+        <div class="swatch-meta">
+          <div class="swatch-name">BSI Blue 100%</div>
+          <div class="swatch-hex">#85D6F0</div>
+          <div class="swatch-slot"><svg class="check-icon" viewBox="0 0 12 10" fill="none"><polyline points="1,5.5 4.5,9 11,1" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg> Slot 1</div>
+        </div>
+      </div>
+      <div class="swatch-card">
+        <div class="swatch-color" style="background:#CEEFF9"></div>
+        <div class="swatch-meta">
+          <div class="swatch-name">BSI Blue 40%</div>
+          <div class="swatch-hex">#CEEFF9</div>
+          <div class="swatch-slot"><svg class="check-icon" viewBox="0 0 12 10" fill="none"><polyline points="1,5.5 4.5,9 11,1" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg> Slot 2</div>
+        </div>
+      </div>
+      <div class="swatch-card">
+        <div class="swatch-color" style="background:#5EAB96"></div>
+        <div class="swatch-meta">
+          <div class="swatch-name">BSI Green 100%</div>
+          <div class="swatch-hex">#5EAB96</div>
+          <div class="swatch-slot"><svg class="check-icon" viewBox="0 0 12 10" fill="none"><polyline points="1,5.5 4.5,9 11,1" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg> Slot 3</div>
+        </div>
+      </div>
+      <div class="swatch-card">
+        <div class="swatch-color" style="background:#BFDDD5"></div>
+        <div class="swatch-meta">
+          <div class="swatch-name">BSI Green 40%</div>
+          <div class="swatch-hex">#BFDDD5</div>
+          <div class="swatch-slot"><svg class="check-icon" viewBox="0 0 12 10" fill="none"><polyline points="1,5.5 4.5,9 11,1" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg> Slot 4</div>
+        </div>
+      </div>
+      <div class="swatch-card">
+        <div class="swatch-color" style="background:#E58F8C"></div>
+        <div class="swatch-meta">
+          <div class="swatch-name">BSI Coral 100%</div>
+          <div class="swatch-hex">#E58F8C</div>
+          <div class="swatch-slot"><svg class="check-icon" viewBox="0 0 12 10" fill="none"><polyline points="1,5.5 4.5,9 11,1" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg> Slot 5</div>
+        </div>
+      </div>
+      <div class="swatch-card">
+        <div class="swatch-color" style="background:#F5D2D1"></div>
+        <div class="swatch-meta">
+          <div class="swatch-name">BSI Coral 40%</div>
+          <div class="swatch-hex">#F5D2D1</div>
+          <div class="swatch-slot"><svg class="check-icon" viewBox="0 0 12 10" fill="none"><polyline points="1,5.5 4.5,9 11,1" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg> Slot 6</div>
+        </div>
+      </div>
+      <div class="swatch-card">
+        <div class="swatch-color" style="background:#8F99D6"></div>
+        <div class="swatch-meta">
+          <div class="swatch-name">BSI Purple 100%</div>
+          <div class="swatch-hex">#8F99D6</div>
+          <div class="swatch-slot"><svg class="check-icon" viewBox="0 0 12 10" fill="none"><polyline points="1,5.5 4.5,9 11,1" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg> Slot 7</div>
+        </div>
+      </div>
+      <div class="swatch-card">
+        <div class="swatch-color" style="background:#D2D6EF"></div>
+        <div class="swatch-meta">
+          <div class="swatch-name">BSI Purple 40%</div>
+          <div class="swatch-hex">#D2D6EF</div>
+          <div class="swatch-slot"><svg class="check-icon" viewBox="0 0 12 10" fill="none"><polyline points="1,5.5 4.5,9 11,1" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg> Slot 8</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <section>
+    <h2>Data palette — slots 9–32 · Extended (methodology undocumented)</h2>
+    <div class="ext-grid">
+      <div class="ext-item"><div class="ext-swatch" style="background:#3599B8"></div><span class="ext-label">#3599B8</span></div>
+      <div class="ext-item"><div class="ext-swatch" style="background:#DFBFBF"></div><span class="ext-label">#DFBFBF</span></div>
+      <div class="ext-item"><div class="ext-swatch" style="background:#4AC5BB"></div><span class="ext-label">#4AC5BB</span></div>
+      <div class="ext-item"><div class="ext-swatch" style="background:#5F6B6D"></div><span class="ext-label">#5F6B6D</span></div>
+      <div class="ext-item"><div class="ext-swatch" style="background:#FB8281"></div><span class="ext-label">#FB8281</span></div>
+      <div class="ext-item"><div class="ext-swatch" style="background:#F4D25A"></div><span class="ext-label">#F4D25A</span></div>
+      <div class="ext-item"><div class="ext-swatch" style="background:#7F898A"></div><span class="ext-label">#7F898A</span></div>
+      <div class="ext-item"><div class="ext-swatch" style="background:#A4DDEE"></div><span class="ext-label">#A4DDEE</span></div>
+      <div class="ext-item"><div class="ext-swatch" style="background:#FDAB89"></div><span class="ext-label">#FDAB89</span></div>
+      <div class="ext-item"><div class="ext-swatch" style="background:#B687AC"></div><span class="ext-label">#B687AC</span></div>
+      <div class="ext-item"><div class="ext-swatch" style="background:#28738A"></div><span class="ext-label">#28738A</span></div>
+      <div class="ext-item"><div class="ext-swatch" style="background:#A78F8F"></div><span class="ext-label">#A78F8F</span></div>
+      <div class="ext-item"><div class="ext-swatch" style="background:#168980"></div><span class="ext-label">#168980</span></div>
+      <div class="ext-item"><div class="ext-swatch" style="background:#293537"></div><span class="ext-label">#293537</span></div>
+      <div class="ext-item"><div class="ext-swatch" style="background:#BB4A4A"></div><span class="ext-label">#BB4A4A</span></div>
+      <div class="ext-item"><div class="ext-swatch" style="background:#B59525"></div><span class="ext-label">#B59525</span></div>
+      <div class="ext-item"><div class="ext-swatch" style="background:#475052"></div><span class="ext-label">#475052</span></div>
+      <div class="ext-item"><div class="ext-swatch" style="background:#6A9FB0"></div><span class="ext-label">#6A9FB0</span></div>
+      <div class="ext-item"><div class="ext-swatch" style="background:#BD7150"></div><span class="ext-label">#BD7150</span></div>
+      <div class="ext-item"><div class="ext-swatch" style="background:#7B4F71"></div><span class="ext-label">#7B4F71</span></div>
+      <div class="ext-item"><div class="ext-swatch" style="background:#1B4D5C"></div><span class="ext-label">#1B4D5C</span></div>
+      <div class="ext-item"><div class="ext-swatch" style="background:#706060"></div><span class="ext-label">#706060</span></div>
+      <div class="ext-item"><div class="ext-swatch" style="background:#0F5C55"></div><span class="ext-label">#0F5C55</span></div>
+      <div class="ext-item"><div class="ext-swatch" style="background:#1C2325"></div><span class="ext-label">#1C2325</span></div>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <section>
+    <h2>Divergent colour scale</h2>
+    <div class="div-wrap">
+      <div class="div-bar">
+        <div class="div-seg" style="background:#E7F7FC"></div>
+        <div class="div-seg" style="background:#CEEFF9"></div>
+        <div class="div-seg" style="background:#B6E6F6"></div>
+        <div class="div-seg" style="background:#9DDEF3"></div>
+        <div class="div-seg" style="background:#85D6F0"></div>
+      </div>
+      <div class="div-labels">
+        <span>min · #E7F7FC · Blue 20%</span>
+        <span>center · #B6E6F6 · Blue 60%</span>
+        <span>max · #85D6F0 · Blue 100%</span>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <section>
+    <h2>Semantic status colours</h2>
+    <div class="semantic-row">
+      <div class="semantic-item">
+        <div class="sem-dot" style="background:#1C8837"></div>
+        <div><div class="sem-name">Good</div><div class="sem-hex">#1C8837</div></div>
+      </div>
+      <div class="semantic-item">
+        <div class="sem-dot" style="background:#FF961F"></div>
+        <div><div class="sem-name">Neutral</div><div class="sem-hex">#FF961F</div></div>
+      </div>
+      <div class="semantic-item">
+        <div class="sem-dot" style="background:#DE350B"></div>
+        <div><div class="sem-name">Bad</div><div class="sem-hex">#DE350B</div></div>
+      </div>
+    </div>
+    <p class="sem-note">Traffic-light semantics — not part of the BSI brand palette, but conventional and clear. Worth registering as official tokens in Figma.</p>
+  </section>
+
+  <div class="page-footer">
+    <span>Colours · bsi-power-bi-config.json</span>
+    <span>2 March 2026</span>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════
+     PAGE 3 — Typography
+══════════════════════════════════════ -->
+<div id="page-typography" class="page">
+  <div class="page-header">
+    <div>
+      <h1>Typography</h1>
+      <p>Text classes · font face · size compliance</p>
+    </div>
+    <div class="verdict-badge" style="background:#FF961F;"><svg class="check-icon" viewBox="0 0 12 12" fill="none"><path d="M6 1L11 10.5H1L6 1Z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><line x1="6" y1="5" x2="6" y2="7.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><circle cx="6" cy="9.2" r="0.7" fill="currentColor"/></svg> Partial</div>
+  </div>
+
+  <section>
+    <h2>Text classes</h2>
+    <table class="tc-table">
+      <thead>
+        <tr>
+          <th style="width:14%">Class</th>
+          <th style="width:28%">Font face (from JSON)</th>
+          <th style="width:10%">Size</th>
+          <th style="width:18%">Colour</th>
+          <th>Used for</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="tc-class">label</span></td>
+          <td style="font-size:12px;color:#505158;">Segoe UI (default)</td>
+          <td><span class="size-warn">9pt <svg class="check-icon" viewBox="0 0 12 12" fill="none"><path d="M6 1L11 10.5H1L6 1Z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><line x1="6" y1="5" x2="6" y2="7.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><circle cx="6" cy="9.2" r="0.7" fill="currentColor"/></svg></span></td>
+          <td><span class="chip"><span class="chip-dot" style="background:#24262E"></span>#24262E</span></td>
+          <td style="font-size:12px;color:#505158;">Data labels on charts</td>
+        </tr>
+        <tr>
+          <td><span class="tc-class">title</span></td>
+          <td style="font-size:12px;color:#505158;">Segoe UI Semibold</td>
+          <td><span class="size-ok">10pt <svg class="check-icon" viewBox="0 0 12 10" fill="none"><polyline points="1,5.5 4.5,9 11,1" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span></td>
+          <td><span class="chip"><span class="chip-dot" style="background:#24262E"></span>#24262E</span></td>
+          <td style="font-size:12px;color:#505158;">Visual / chart titles</td>
+        </tr>
+        <tr>
+          <td><span class="tc-class">header</span></td>
+          <td style="font-size:12px;color:#505158;">Segoe UI (default)</td>
+          <td><span class="size-ok">11pt <svg class="check-icon" viewBox="0 0 12 10" fill="none"><polyline points="1,5.5 4.5,9 11,1" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span></td>
+          <td><span class="chip"><span class="chip-dot" style="background:#24262E"></span>#24262E</span></td>
+          <td style="font-size:12px;color:#505158;">Table / matrix column headers</td>
+        </tr>
+        <tr>
+          <td><span class="tc-class">callout</span></td>
+          <td style="font-size:12px;color:#505158;">Segoe UI Bold</td>
+          <td><span class="size-ok">32pt <svg class="check-icon" viewBox="0 0 12 10" fill="none"><polyline points="1,5.5 4.5,9 11,1" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span></td>
+          <td><span class="chip"><span class="chip-dot" style="background:#24262E"></span>#24262E</span></td>
+          <td style="font-size:12px;color:#505158;">KPI card large numbers</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <hr class="divider">
+
+  <section>
+    <h2>Font face comparison</h2>
+    <div class="font-compare">
+      <div class="font-box">
+        <div class="font-box-label">Brand guideline</div>
+        <div class="font-sample-noto">Noto Sans Regular</div>
+        <div class="font-note">Google Fonts · weight 400 · minimum 10pt body text</div>
+      </div>
+      <div class="font-box mismatch">
+        <div class="font-box-label">Power BI theme (current) <svg class="check-icon" viewBox="0 0 12 12" fill="none"><path d="M6 1L11 10.5H1L6 1Z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><line x1="6" y1="5" x2="6" y2="7.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><circle cx="6" cy="9.2" r="0.7" fill="currentColor"/></svg></div>
+        <div class="font-sample-segoe">Segoe UI Bold / Semibold</div>
+        <div class="font-note">System font — Noto Sans is not a built-in Power BI font.<br>Segoe UI is the closest available fallback.</div>
+      </div>
+    </div>
+    <div class="reco" style="margin-top:12px;">Confirm with Pablo whether Noto Sans can be loaded via a custom visual or Power BI Embedded. If not, document Segoe UI as the approved Power BI exception in Frontify.</div>
+  </section>
+
+  <hr class="divider">
+
+  <section>
+    <h2>Global foreground token</h2>
+    <div style="max-width:320px;">
+      <div class="token-row">
+        <div class="token-left">
+          <div class="token-swatch" style="background:#24262E"></div>
+          <div>
+            <div class="token-name">BSI Charcoal</div>
+            <div class="token-key">"foreground"</div>
+          </div>
+        </div>
+        <div class="token-hex">#24262E</div>
+      </div>
+    </div>
+    <p style="font-size:12px;color:var(--mid);margin-top:10px;">Fallback text and UI colour for elements not covered by the four textClasses above.</p>
+  </section>
+
+  <div class="page-footer">
+    <span>Typography · bsi-power-bi-config.json</span>
+    <span>2 March 2026</span>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════
+     PAGE 4 — Visual styles
+══════════════════════════════════════ -->
+<div id="page-visual-styles" class="page">
+  <div class="page-header">
+    <div>
+      <h1>Visual styles</h1>
+      <p>Rendering overrides applied globally to all visuals and pages</p>
+    </div>
+    <div class="verdict-badge"><svg class="check-icon" viewBox="0 0 12 10" fill="none"><polyline points="1,5.5 4.5,9 11,1" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg> On-brand</div>
+  </div>
+
+  <section>
+    <h2>All visuals (<code style="font-size:11px;">*.*</code>)</h2>
+    <div class="config-block">
+      <div class="config-head">
+        <span class="config-key">"visualStyles" → "*" → "*"</span>
+        <span class="config-type">applies to every visual on every page</span>
+      </div>
+      <div class="config-body">
+        <table class="vs-table">
+          <thead>
+            <tr>
+              <th style="width:22%">Property</th>
+              <th style="width:22%">Value</th>
+              <th>What it does</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="vs-prop">background · transparency</span></td>
+              <td><span class="vs-val">0%</span></td>
+              <td><span class="vs-effect">Visual backgrounds are fully opaque — the page background colour (#FBFBFB) shows correctly behind all charts.</span></td>
+            </tr>
+            <tr>
+              <td><span class="vs-prop">visualHeader · transparency</span></td>
+              <td><span class="vs-val">100% (hidden)</span></td>
+              <td><span class="vs-effect">The "…" options menu on each visual is invisible by default — cleaner layout. Still accessible on hover in edit mode.</span></td>
+            </tr>
+            <tr>
+              <td><span class="vs-prop">border · show</span></td>
+              <td><span class="vs-val">false</span></td>
+              <td><span class="vs-effect">No border drawn around visuals. Colour (#E3E3E3) and radius (3px) are defined but inactive — can be switched on per visual without editing the theme.</span></td>
+            </tr>
+            <tr>
+              <td><span class="vs-prop">border · color</span></td>
+              <td><span class="vs-val"><span class="chip"><span class="chip-dot" style="background:#E3E3E3;border:1px solid #ccc;"></span>#E3E3E3</span></span></td>
+              <td><span class="vs-effect">Light grey border — pre-configured but hidden. Ready to enable per visual if needed.</span></td>
+            </tr>
+            <tr>
+              <td><span class="vs-prop">border · radius</span></td>
+              <td><span class="vs-val">3px</span></td>
+              <td><span class="vs-effect">Slightly rounded corners if border is enabled — consistent with BSI's clean aesthetic.</span></td>
+            </tr>
+            <tr>
+              <td><span class="vs-prop">outspacePane · checkboxAndApplyColor</span></td>
+              <td><span class="vs-val"><span class="chip"><span class="chip-dot" style="background:#5EAB96"></span>#5EAB96</span></span></td>
+              <td><span class="vs-effect">Filter/slicer pane checkboxes and apply buttons use BSI Green — consistent brand accent for interactive controls.</span></td>
+            </tr>
+            <tr>
+              <td><span class="vs-prop">outspacePane · titleSize</span></td>
+              <td><span class="vs-val">8pt</span></td>
+              <td><span class="vs-effect">Filter pane title text is 8pt — below brand minimum, but typical for compact filter UI. Flag if accessibility is a concern.</span></td>
+            </tr>
+            <tr>
+              <td><span class="vs-prop">outspacePane · headerSize</span></td>
+              <td><span class="vs-val">8pt</span></td>
+              <td><span class="vs-effect">Filter pane field header text is also 8pt — same note as above.</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>All pages (<code style="font-size:11px;">page.*</code>)</h2>
+    <div class="config-block">
+      <div class="config-head">
+        <span class="config-key">"visualStyles" → "page" → "*"</span>
+        <span class="config-type">applies to every report page canvas</span>
+      </div>
+      <div class="config-body">
+        <table class="vs-table">
+          <thead>
+            <tr>
+              <th style="width:22%">Property</th>
+              <th style="width:22%">Value</th>
+              <th>What it does</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="vs-prop">background · color</span></td>
+              <td><span class="vs-val"><span class="chip"><span class="chip-dot" style="background:#FBFBFB;border:1px solid #E9E9EA;"></span>#FBFBFB</span></span></td>
+              <td><span class="vs-effect">Every report page uses BSI Soft White as its canvas background — reduces eye strain, matches brand guideline for digital backgrounds.</span></td>
+            </tr>
+            <tr>
+              <td><span class="vs-prop">background · transparency</span></td>
+              <td><span class="vs-val">0%</span></td>
+              <td><span class="vs-effect">Page background is fully opaque — Soft White colour is always visible, never see-through.</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <div class="page-footer">
+    <span>Visual styles · bsi-power-bi-config.json</span>
+    <span>2 March 2026</span>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════
+     PAGE 5 — Meeting prep
+══════════════════════════════════════ -->
+<div id="page-meeting" class="page">
+  <div class="page-header">
+    <div>
+      <h1>Meeting prep</h1>
+      <p>Questions and actions for Pablo, data viz team</p>
+    </div>
+  </div>
+
+  <section>
+    <h2>Priority questions</h2>
+    <div class="q-grid">
+      <div class="q-card priority">
+        <div class="q-tag">Priority · Extended palette</div>
+        <div class="q-text">How was the extended palette (slots 9–32) constructed? Is there a system behind the colour choices, or were they taken from a default Power BI template? We'd like to understand this before adding them to Figma as data viz variables.</div>
+      </div>
+      <div class="q-card priority">
+        <div class="q-tag">Priority · Font exception</div>
+        <div class="q-text">Noto Sans isn't a built-in Power BI font — is Segoe UI the agreed fallback for all Power BI work? Should we formally document this as the approved exception in Frontify?</div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <section>
+    <h2>Actions for Figma design system</h2>
+    <div class="q-grid">
+      <div class="q-card action">
+        <div class="q-tag">Action · Figma variables</div>
+        <div class="q-text">Which colour tokens are most useful to have in Figma as design variables — just the brand 8, or the full 32? Should semantic tokens (good/bad/neutral) and divergent scale stops also be captured?</div>
+      </div>
+      <div class="q-card action">
+        <div class="q-tag">Action · Figma components</div>
+        <div class="q-text">Sunder is building out Figma data viz components. Are there chart types, annotation patterns, or layout conventions in your Power BI work we should capture as reusable Figma components or guidelines?</div>
+      </div>
+      <div class="q-card action">
+        <div class="q-tag">Action · Maintenance &amp; versioning</div>
+        <div class="q-text">As brand guidelines evolve, how should updates to the Power BI theme be managed? Should we establish a versioning process so deployed dashboards can be refreshed centrally?</div>
+      </div>
+      <div class="q-card action">
+        <div class="q-tag">Action · Semantic tokens</div>
+        <div class="q-text">The good/bad/neutral colours aren't in the brand palette. Were these chosen from a specific accessibility or UX framework? Context would help us document them properly in Figma and ensure they're used consistently elsewhere.</div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <section>
+    <h2>Clarifications</h2>
+    <div class="q-grid">
+      <div class="q-card clarify">
+        <div class="q-tag">Clarify · Other tools</div>
+        <div class="q-text">Does the team use other data viz tools beyond Power BI — Excel, Tableau, Python/Matplotlib? Should the same theme be adapted for those, and is there any existing work we can build on?</div>
+      </div>
+      <div class="q-card clarify">
+        <div class="q-tag">Clarify · Label size</div>
+        <div class="q-text">Data labels are set to 9pt — slightly below our 10pt brand minimum. Was this intentional for dense dashboards? Happy to document as an accepted exception if there's a practical reason.</div>
+      </div>
+    </div>
+  </section>
+
+  <div class="page-footer">
+    <span>Meeting prep · Pablo, data viz team</span>
+    <span>2 March 2026</span>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════
+     PAGE 6 — Raw JSON
+══════════════════════════════════════ -->
+<div id="page-raw-json" class="page">
+  <div class="page-header">
+    <div>
+      <h1>Raw JSON</h1>
+      <p>bsi-power-bi-config.json · full file contents</p>
+    </div>
+    <a class="btn-json" href="bsi-power-bi-config.json" target="_blank" style="font-size:13px;padding:10px 18px;">↗ Open JSON file</a>
+  </div>
+
+  <section>
+    <h2>File preview</h2>
+    <div class="json-toolbar">
+      <div class="json-toolbar-left">
+        <span class="json-filename">bsi-power-bi-config.json</span>
+        <span class="json-size">1 object · 7 top-level keys · 32 colour slots</span>
+      </div>
+      <a class="btn-open" href="bsi-power-bi-config.json" target="_blank">↗ Open raw file</a>
+    </div>
+    <pre class="json-pre" id="json-display"></pre>
+  </section>
+
+  <section>
+    <h2>Key map</h2>
+    <div class="config-block">
+      <div class="config-body">
+        <table class="vs-table">
+          <thead>
+            <tr>
+              <th style="width:26%">JSON key</th>
+              <th style="width:16%">Type</th>
+              <th>What it controls</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="config-key">"name"</span></td>
+              <td style="font-size:11px;color:var(--mid);">string</td>
+              <td><span class="vs-effect">Theme display name shown in Power BI — "BSI Official Theme".</span></td>
+            </tr>
+            <tr>
+              <td><span class="config-key">"textClasses"</span></td>
+              <td style="font-size:11px;color:var(--mid);">object (4 keys)</td>
+              <td><span class="vs-effect">Font face, size and colour for label / title / header / callout text roles.</span></td>
+            </tr>
+            <tr>
+              <td><span class="config-key">"dataColors"</span></td>
+              <td style="font-size:11px;color:var(--mid);">array (32 strings)</td>
+              <td><span class="vs-effect">Sequential palette for chart series — Power BI cycles through in order.</span></td>
+            </tr>
+            <tr>
+              <td><span class="config-key">"foreground"</span></td>
+              <td style="font-size:11px;color:var(--mid);">string</td>
+              <td><span class="vs-effect">Global fallback text / UI colour for elements not covered by textClasses.</span></td>
+            </tr>
+            <tr>
+              <td><span class="config-key">"good" / "neutral" / "bad"</span></td>
+              <td style="font-size:11px;color:var(--mid);">string × 3</td>
+              <td><span class="vs-effect">Semantic traffic-light colours for KPIs, conditional formatting, and status indicators.</span></td>
+            </tr>
+            <tr>
+              <td><span class="config-key">"minimum" / "center" / "maximum"</span></td>
+              <td style="font-size:11px;color:var(--mid);">string × 3</td>
+              <td><span class="vs-effect">Three-stop divergent colour ramp for heat maps and gradient conditional formatting.</span></td>
+            </tr>
+            <tr>
+              <td><span class="config-key">"visualStyles"</span></td>
+              <td style="font-size:11px;color:var(--mid);">object (nested)</td>
+              <td><span class="vs-effect">Rendering overrides for all visuals (*.* — background, header, border, filter pane) and all pages (page.* — canvas background).</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <div class="page-footer">
+    <span>bsi-power-bi-config.json</span>
+    <span>2 March 2026</span>
+  </div>
+</div>
+
+
+<script>
+  // ── Page switching ──
+  function showPage(id, btn) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('page-' + id).classList.add('active');
+    btn.classList.add('active');
+    window.scrollTo({ top: 0 });
+  }
+
+  // ── JSON pretty-print with syntax highlighting ──
+  const raw = {"name":"BSI Official Theme","textClasses":{"label":{"color":"#24262E","fontSize":9},"callout":{"color":"#24262E","fontFace":"'Segoe UI Bold', wf_segoe-ui_bold, helvetica, arial, sans-serif","fontSize":32},"title":{"color":"#24262E","fontFace":"'Segoe UI Semibold', wf_segoe-ui_semibold, helvetica, arial, sans-serif","fontSize":10},"header":{"color":"#24262E","fontSize":11}},"dataColors":["#85D6F0","#CEEFF9","#5EAB96","#BFDDD5","#E58F8C","#F5D2D1","#8F99D6","#D2D6EF","#3599B8","#DFBFBF","#4AC5BB","#5F6B6D","#FB8281","#F4D25A","#7F898A","#A4DDEE","#FDAB89","#B687AC","#28738A","#A78F8F","#168980","#293537","#BB4A4A","#B59525","#475052","#6A9FB0","#BD7150","#7B4F71","#1B4D5C","#706060","#0F5C55","#1C2325"],"foreground":"#24262E","bad":"#DE350B","neutral":"#FF961F","good":"#1C8837","minimum":"#E7F7FC","center":"#B6E6F6","maximum":"#85D6F0","visualStyles":{"*":{"*":{"background":[{"transparency":0}],"visualHeader":[{"transparency":100}],"outspacePane":[{"checkboxAndApplyColor":{"solid":{"color":"#5EAB96"}},"titleSize":8,"headerSize":8}],"border":[{"color":{"solid":{"color":"#E3E3E3"}},"show":false,"radius":3}]}},"page":{"*":{"background":[{"color":{"solid":{"color":"#FBFBFB"}},"transparency":0}]}}}};
+
+  function highlight(json) {
+    const escaped = json
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;');
+    return escaped.replace(
+      /("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g,
+      function(match) {
+        if (/^"/.test(match)) {
+          if (/:$/.test(match)) return '<span class="j-key">' + match + '</span>';
+          return '<span class="j-str">' + match + '</span>';
+        }
+        if (/true|false/.test(match)) return '<span class="j-bool">' + match + '</span>';
+        if (/null/.test(match))       return '<span class="j-null">' + match + '</span>';
+        return '<span class="j-num">' + match + '</span>';
+      }
+    );
+  }
+
+  document.getElementById('json-display').innerHTML =
+    highlight(JSON.stringify(raw, null, 2));
+</script>
+</body>
+</html>
